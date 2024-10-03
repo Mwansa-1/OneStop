@@ -1,0 +1,336 @@
+{% load widget_tweaks %}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Onestop</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        /* Navigation Bar */
+        .navbar {
+            background-color: green;
+            color: white;
+            padding: 10px;
+            display: flex;
+            justify-content: space-between; 
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            margin: 0 10px;
+            font-size: 16px;
+        }
+
+        .navbar a:hover {
+            text-decoration: underline;
+        }
+
+        .navbar-title {
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .navbar .search-bar {
+            display: flex;
+            align-items: center;
+        }
+
+        .navbar .search-bar input {
+            padding: 8px;
+            border-radius: 25px;
+            border: 1px solid #ccc;
+            margin-right: 10px;
+            width: 200px;
+        }
+
+        .navbar .search-bar button {
+            background-color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 25px;
+            cursor: pointer;
+        }
+
+        .navbar .logout-button {
+            background-color: white;
+            color: green;
+            border: 2px solid white;
+            padding: 8px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .navbar .logout-button:hover {
+            background-color: red;
+            color: white;
+        }
+
+        /* Main Content */
+        .container {
+            text-align: center;
+            padding: 50px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .icon {
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+
+        .title {
+            font-size: 20px;
+            margin-bottom: 20px;
+        }
+
+        .grid {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            margin: 20px 0;
+        }
+
+        .card {
+            background-color: white;
+            border: 1px solid #ccc;
+            padding: 20px;
+            width: 200px;
+            margin: 10px;
+            text-align: center;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Chatbot Input */
+        .chat-form {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 30px;
+            padding-bottom: 20px;
+        }
+
+        #user-input {
+            width: 70%;
+            padding: 15px;
+            border-radius: 25px;
+            border: 1px solid #ccc;
+            font-size: 16px;
+            margin-right: 10px;
+        }
+
+        .chatbox button {
+            background-color: green;
+            color: white;
+            border: none;
+            padding: 15px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        /* Footer */
+        .footer {
+            margin-top: 20px;
+            font-size: 12px;
+            color: red;
+            text-align: center;
+        }
+
+        #send{
+            background-color: green;
+            color: white;
+            border: none;
+            padding: 15px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        /* Chat Messages */
+        .chat-message {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 15px;
+            max-width: 60%;
+        }
+
+        .user-message {
+            background-color: #daf8da;
+            text-align: right;
+            margin-left: auto;
+        }
+
+        .bot-message {
+            background-color: #f1f0f0;
+            text-align: left;
+            margin-right: auto;
+        }
+
+        .chatbox {
+            max-height: 50vh;
+            overflow-y: auto;
+            padding: 15px;
+        }
+
+        /* AskOneStop Link */
+        .askonestop {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            font-size: 14px;
+            background-color: green;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 10px;
+            text-decoration: none;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .navbar .search-bar input {
+                width: 150px;
+            }
+
+            .chatbox input {
+                width: 80%;
+            }
+
+            .card {
+                width: 150px;
+                padding: 15px;
+            }
+
+            .askonestop {
+                bottom: 15px;
+                right: 15px;
+                padding: 8px 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <span class="navbar-title">Onestop</span>
+        <div class="search-bar">
+            <input type="text" placeholder="Search...">
+            <button>Search</button>
+        </div>
+        <div>
+            <a href="#">Home</a>
+            <a href="#">Courses</a>
+            <a href="#">Format Guide</a>
+            <a href="#">ASKONESTOP</a>
+
+            <!-- Logout Button -->
+            <form action="#" method="post" style="display:inline;">
+                {% csrf_token %}
+                <button type="submit" class="logout-button">Logout</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="icon"></div>
+        <div class="title">Your Onestop site for all Unza policies</div>
+
+        <!-- Grid of Options -->
+        <div class="grid">
+            <div class="card">
+                <p>How do I apply for accommodation?</p>
+                <p>🛏️</p>
+            </div>
+            <div class="card">
+                <p>Letter formats when addressing the dean</p>
+                <p>📧</p>
+            </div>
+            <div class="card">
+                <p>Staff exchange requirements</p>
+                <p>🔁</p>
+            </div>
+            <div class="card">
+                <p>How do I apply for a withdrawal?</p>
+                <p>📝</p>
+            </div>
+        </div>
+
+        <div id="chat-box" class="chatbox">
+            <!-- Chat messages will be appended here -->
+        </div>
+
+        <form id="chat-form" class="chat-form">
+            <input type="text" id="user-input" placeholder="Type your message here..." required>
+            <button id="send" type="submit">Send</button>
+        </form>
+
+        <div class="footer">
+            One stop chat displays information which may be inaccurate.
+        </div>
+
+        <a href="#" class="askonestop">AskOneStop</a>
+
+    </div>
+
+    <script>
+        $(document).ready(function() {
+            $('#chat-form').on('submit', function(event) {
+                event.preventDefault();
+                var userInput = $('#user-input').val();
+                $('#chat-box').append('<div class="chat-message user-message">' + userInput + '</div>');
+                $('#user-input').val('');
+
+                // Hide the cards when the user starts chatting
+                $('.grid').hide();
+
+                $.ajax({
+                    url: '{% url "chat" %}',
+                    method: 'POST',
+                    data: {
+                        'prompt': userInput,
+                        'csrfmiddlewaretoken': '{{ csrf_token }}'
+                    },
+                    success: function(response) {
+                        // Assuming response contains formatting symbols (*bold*, _italics_, etc.)
+                        var formattedResponse = formatResponse(response.response);
+                        $('#chat-box').append('<div class="chat-message bot-message">' + formattedResponse + '</div>');
+                    },
+                    error: function(error) {
+                        $('#chat-box').append('<div class="chat-message bot-message"><strong>Bot:</strong> Sorry, something went wrong.</div>');
+                    }
+                });
+            });
+
+            // Function to parse response and apply formatting
+            function formatResponse(text) {
+                // Bold: replace *text* with <strong>text</strong>
+                text = text.replace(/\*(.*?)\*/g, '<strong>$1</strong>');
+                // Italics: replace _text_ with <em>text</em>
+                text = text.replace(/_(.*?)_/g, '<em>$1</em>');
+                return text;
+            }
+        });
+    </script>
+</body>
+</html>
