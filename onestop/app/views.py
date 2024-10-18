@@ -11,16 +11,21 @@ from django.contrib.auth.forms import AuthenticationForm
 from .models import Policy
 
 
-
+# AIzaSyCW1_W1-w3fnWvc4OlCca_zI1607-60XtY
+# AIzaSyASINCqIKiWdWEcmz3_Ij-u3ELqSSnBPDQ
 
 # class Response(typing.TypedDict):
 #   response_item: str
-genai.configure(api_key='AIzaSyASINCqIKiWdWEcmz3_Ij-u3ELqSSnBPDQ')
+genai.configure(api_key='AIzaSyCW1_W1-w3fnWvc4OlCca_zI1607-60XtY')
 # Initialize the model
 model = genai.GenerativeModel('gemini-1.5-pro',
                             #   generation_config={"response_mime_type": "application/json",
                             #                      "response_schema": list[Response]}
                             )
+import os
+
+media = os.path.join(os.path.dirname(__file__), 'media')
+sample_pdf = genai.upload_file(os.path.join(media, "Financial_Regulations_2015.pdf"))
 
 @csrf_exempt
 @login_required
@@ -36,8 +41,12 @@ def chat_view(request):
             "Please provide accurate and helpful responses based on the user's role."
             "Do not ask if the user is a staff member or student. "
             "Do not ask for a lot of details"
+            "Check the policies for the answer."
+          
+            
         )
-        full_prompt = f"{instructions}\n\nUser: {prompt}"
+        # add the document to the prompt
+        full_prompt = f"{instructions}\n\nUser: {prompt} \n\nFile: {sample_pdf}"
 
         # Check user status and retrieve relevant policies
         user_status = request.user.status
