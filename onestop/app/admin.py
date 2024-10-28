@@ -3,7 +3,7 @@ from django.contrib.auth.admin import UserAdmin
 from .models import User, Policy, Conversation
 
 # Register the custom User model with the UserAdmin
-admin.site.register(User, UserAdmin)
+admin.site.register(User)
 
 # Register the Policy model
 admin.site.register(Policy)

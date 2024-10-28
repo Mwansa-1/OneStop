@@ -8,7 +8,7 @@ from django.contrib.auth.decorators import login_required
 from .models import Conversation
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import AuthenticationForm
-from .models import Policy
+from .models import Policy , User , Conversation
 
 
 # AIzaSyCW1_W1-w3fnWvc4OlCca_zI1607-60XtY
@@ -32,25 +32,35 @@ sample_pdf = genai.upload_file(os.path.join(media, "Financial_Regulations_2015.p
 def chat_view(request):
     if request.method == 'POST':
         prompt = request.POST.get('prompt')
+        conversation = Conversation.objects.filter(user=request.user).last()
+        # get the user status 
+        user_details = User.objects.get(username=request.user.username)
         
         # Add specific instructions to the prompt
         instructions = (
-            "You are a chatbot for the University of Zambia (UNZA). "
+             "You are a chatbot for the University of Zambia (UNZA). "
             "Staff and students will ask you questions based on the policies for the school. Determine the user's role based on their status. "
             "Students cannot access staff policies. "
-            "Please provide accurate and helpful responses based on the user's role."
+            "Please provide accurate and helpful responses based on the user's role. "
             "Do not ask if the user is a staff member or student. "
-            "Do not ask for a lot of details"
-            "Check the policies for the answer."
-          
+            "Do not ask for a lot of details. "
+            "Check the policies for the answer. "
+            "Do not make up answers. "
+            "It is fine if you use my name and status in the conversation. "
+            "If the information is in the document, give full details. "
+            "Do not say that you don't know the answer; check the document and give a response according to the document."
+
             
         )
         # add the document to the prompt
-        full_prompt = f"{instructions}\n\nUser: {prompt} \n\nFile: {sample_pdf}"
+        full_prompt = f"{instructions}\n\nUser: {prompt} \n\nFile: {sample_pdf} \n\nConversation:{conversation} \n\nUser Status: {user_details.status} \n\nName: {user_details.username}"
+
+        
+
 
         # Check user status and retrieve relevant policies
-        user_status = request.user.status
-        if user_status == 'staff':
+       
+        if user_details.status == 'staff':
             policies = Policy.objects.all()
         else:
             policies = Policy.objects.filter(is_staff_only=False)
