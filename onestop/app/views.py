@@ -26,6 +26,11 @@ import os
 
 media = os.path.join(os.path.dirname(__file__), 'media')
 sample_pdf = genai.upload_file(os.path.join(media, "Financial_Regulations_2015.pdf"))
+recruitment_policy = genai.upload_file(os.path.join(media, "Recruitment and Selection Policy and Procedures 2017 .PDF"))
+sexual_harassment_policy = genai.upload_file(os.path.join(media, "Sexual Harassment Policy 2010 .PDF"))
+staff_discipline_policy = genai.upload_file(os.path.join(media, "Staff Disciplinary and Grievance Procedures Code 2013 .pdf"))
+staff_training_policy = genai.upload_file(os.path.join(media, "Staff Training and Development Policy 2018.pdf"))
+
 
 @csrf_exempt
 @login_required
@@ -53,7 +58,9 @@ def chat_view(request):
             
         )
         # add the document to the prompt
-        full_prompt = f"{instructions}\n\nUser: {prompt} \n\nFile: {sample_pdf} \n\nConversation:{conversation} \n\nUser Status: {user_details.status} \n\nName: {user_details.username}"
+        # add all the files to the prompt
+        
+        full_prompt = f"{instructions}\n\nUser: {prompt} \n\nFile1: {sample_pdf} \n\nFile2: {recruitment_policy} \n\nFile3: {sexual_harassment_policy} \n\nFile4: {staff_discipline_policy} \n\nFile5: {staff_training_policy} \n\nConversation:{conversation} \n\nUser Status: {user_details.status} \n\nName: {user_details.username}"
 
         
 
