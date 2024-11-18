@@ -48,6 +48,10 @@ class Policy(models.Model):
             return False
         return True
     
+   
+    class Meta:
+        verbose_name_plural = 'Policies'
+    
 
 
 

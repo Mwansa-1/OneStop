@@ -31,6 +31,7 @@ ALLOWED_HOSTS = ["*"]
 # Application definition
 
 INSTALLED_APPS = [
+    'jazzmin',
     'widget_tweaks',
     'app',
     'django.contrib.admin',
@@ -133,3 +134,74 @@ LOGIN_REDIRECT_URL = '/'
 
 # URL to redirect to for login
 LOGIN_URL = 'login'
+
+# add Logout URL to redirect to login page of the app
+
+LOGOUT_REDIRECT_URL = 'login'
+
+# Jazzmin settings
+JAZZMIN_UI_TWEAKS = {
+    "navbar_small_text": False,
+    "footer_small_text": False,
+    "body_small_text": False,
+    "brand_small_text": False,
+    "brand_colour": False,
+    "accent": "accent-primary",
+    "navbar": "navbar-success navbar-dark",
+    "no_navbar_border": True,
+    "navbar_fixed": False,
+    "layout_boxed": False,
+    "footer_fixed": False,
+    "sidebar_fixed": True,
+    "sidebar": "sidebar-dark-primary",
+    "sidebar_nav_small_text": False,
+    "sidebar_disable_expand": False,
+    "sidebar_nav_child_indent": False,
+    "sidebar_nav_compact_style": False,
+    "sidebar_nav_legacy_style": False,
+    "sidebar_nav_flat_style": True,
+    "theme": "default",
+    "dark_mode_theme": None,
+    "button_classes": {
+        "primary": "btn-primary",
+        "secondary": "btn-secondary",
+        "info": "btn-info",
+        "warning": "btn-warning",
+        "danger": "btn-danger",
+        "success": "btn-success"
+    },
+    "actions_sticky_top": False
+}
+
+# Jazzmin settings
+JAZZMIN_SETTINGS = {
+    "site_title": "OneStop",
+    "site_header": "OneStop",
+    "site_brand" : "OneStop",
+    "site_logo": None,
+    "welcome_sign": "Welcome to OneStop Admin Dashboard",
+    "search_model": "auth.User",
+    "user_avatar": None,
+    "topmenu_links": [
+        {"name": "Home", "url": "admin:index", "permissions": ["auth.view_user"]},
+        {"name": "Chat", "url": "chat", "permissions": ["auth.view_user"]},
+    ],
+    "show_ui_builder": False,
+    "navigation_expanded": True,
+    "hide_apps": [],
+    "hide_models": [],
+    "related_modal_active": False,
+    "custom_css": None,
+
+    # add the icons for the models
+
+    "icons": {
+        "auth": "fas fa-users-cog",
+        "auth.User": "fas fa-user",
+        "auth.Group": "fas fa-users",
+        "app.Conversation": "fas fa-comments",
+        "app.Policy": "fas fa-file-alt",
+        "app.User": "fas fa-user",
+       
+    },
+}

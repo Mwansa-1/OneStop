@@ -244,7 +244,10 @@
             <!-- Logout Button -->
             <form action="#" method="post" style="display:inline;">
                 {% csrf_token %}
-                <button type="submit" class="logout-button">Logout</button>
+                
+                <button type="submit" class="logout-button">
+                    <a href="{% url 'logout'%}" >Logout</a>
+                </button>
             </form>
         </div>
     </div>
@@ -289,45 +292,76 @@
         <a href="#" class="askonestop">AskOneStop</a>
 
     </div>
-
     <script>
-        $(document).ready(function() {
-            $('#chat-form').on('submit', function(event) {
-                event.preventDefault();
-                var userInput = $('#user-input').val();
-                $('#chat-box').append('<div class="chat-message user-message">' + userInput + '</div>');
-                $('#user-input').val('');
-
-                // Hide the cards when the user starts chatting
-                $('.grid').hide();
-
-                $.ajax({
-                    url: '{% url "chat" %}',
-                    method: 'POST',
-                    data: {
-                        'prompt': userInput,
-                        'csrfmiddlewaretoken': '{{ csrf_token }}'
-                    },
-                    success: function(response) {
-                        // Assuming response contains formatting symbols (*bold*, _italics_, etc.)
-                        var formattedResponse = formatResponse(response.response);
-                        $('#chat-box').append('<div class="chat-message bot-message">' + formattedResponse + '</div>');
-                    },
-                    error: function(error) {
-                        $('#chat-box').append('<div class="chat-message bot-message"><strong>Bot:</strong> Sorry, something went wrong.</div>');
-                    }
+    
+            $(document).ready(function() {
+                $('#chat-form').on('submit', function(event) {
+                    event.preventDefault();
+                    var userInput = $('#user-input').val();
+                    $('#chat-box').append('<div class="chat-message user-message">' + userInput + '</div>');
+                    $('#user-input').val('');
+            
+                    // Hide the cards when the user starts chatting
+                    $('.grid').hide();
+        
+                    // Scroll to bottom after adding user's message
+                    scrollToBottom();
+        
+                    $.ajax({
+                        url: '{% url "chat" %}',
+                        method: 'POST',
+                        data: {
+                            'prompt': userInput,
+                            'csrfmiddlewaretoken': '{{ csrf_token }}'
+                        },
+                        success: function(response) {
+                            // Assuming response contains formatting symbols (*bold*, _italics_, etc.)
+                            var formattedResponse = formatResponse(response.response);
+                            $('#chat-box').append('<div class="chat-message bot-message">' + formattedResponse + '</div>');
+        
+                            // Scroll to bottom after adding bot's response
+                            scrollToBottom();
+                        },
+                        error: function(error) {
+                            $('#chat-box').append('<div class="chat-message bot-message"><strong>Bot:</strong> Sorry, something went wrong.</div>');
+        
+                            // Scroll to bottom after error message
+                            scrollToBottom();
+                        }
+                    });
                 });
+        
+                // Function to parse response and apply formatting
+                function formatResponse(text) {
+                    // Bold: replace *text* with <strong>text</strong>
+                    text = text.replace(/\*\s?(.*?)\*/g, '<strong>$1</strong>');
+                    // Italics: replace _text_ with <em>text</em>
+                    text = text.replace(/_(.*?)_/g, '<em>$1</em>');
+                    // Line breaks for new lines in response text
+                    text = text.replace(/\n/g, '<br>');
+        
+                    // Handling bullet points
+                    text = text.replace(/- (.*?)(\n|$)/g, '<li>$1</li>');
+                    text = text.replace(/<li>(.*?)<\/li>/g, '<ul><li>$1</li></ul>');
+                    text = text.replace(/<\/ul><ul>/g, ''); // Merge multiple <ul> blocks
+        
+                    // Support for numbered lists (if present)
+                    text = text.replace(/\d+\.\s(.*?)(\n|$)/g, '<ol><li>$1</li></ol>');
+                    text = text.replace(/<\/ol><ol>/g, ''); // Merge multiple <ol> blocks
+        
+                    // Handling sections for more clarity
+                    text = text.replace(/(Policy: )(.*?)(\n|$)/g, '<h3>$2</h3>');
+                    
+                    return text;
+                }
+        
+                // Function to scroll chat box to the bottom
+                function scrollToBottom() {
+                    $('#chat-box').animate({ scrollTop: $('#chat-box')[0].scrollHeight }, 'slow');
+                }
             });
-
-            // Function to parse response and apply formatting
-            function formatResponse(text) {
-                // Bold: replace *text* with <strong>text</strong>
-                text = text.replace(/\*(.*?)\*/g, '<strong>$1</strong>');
-                // Italics: replace _text_ with <em>text</em>
-                text = text.replace(/_(.*?)_/g, '<em>$1</em>');
-                return text;
-            }
-        });
-    </script>
+        </script>
+        
+    
 </body>
 </html>

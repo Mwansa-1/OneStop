@@ -54,7 +54,7 @@ def chat_view(request):
             "It is fine if you use my name and status in the conversation. "
             "If the information is in the document, give full details. "
             "Do not say that you don't know the answer; check the document and give a response according to the document."
-
+            
             
         )
         # add the document to the prompt
@@ -117,4 +117,4 @@ def custom_login_view(request):
 
 def custom_logout_view(request):
     logout(request)
-    return render(request, 'app/logout.html') # Redirect to the index page after logout
+    return render(request, 'login.html') # Redirect to the index page after logout
