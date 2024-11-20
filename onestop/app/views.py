@@ -9,6 +9,7 @@ from .models import Conversation
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import AuthenticationForm
 from .models import Policy , User , Conversation
+from .forms import SignUpForm
 
 
 # AIzaSyCW1_W1-w3fnWvc4OlCca_zI1607-60XtY
@@ -90,16 +91,27 @@ def chat_view(request):
 
     return render(request, 'app/index.html')
 
+def format_guide_view(request):
+    return render(request, 'app/format_guide.html')
+
+from django.shortcuts import render, redirect
+from django.contrib.auth import login, authenticate
+from .forms import SignUpForm
+
 def signup_view(request):
     if request.method == 'POST':
-        form = UserCreationForm(request.POST)
+        form = SignUpForm(request.POST)
         if form.is_valid():
-            form.save()
-            return redirect('login')
+            user = form.save(commit=False)
+            user.status = 'student'  # Set the default status
+            user.save()
+            raw_password = form.cleaned_data.get('password1')
+            user = authenticate(username=user.username, password=raw_password)
+            login(request, user)
+            return redirect('chat')
     else:
-        form = UserCreationForm()
-    return render(request, 'chat/signup.html', {'form': form})
-
+        form = SignUpForm()
+    return render(request, 'app/signup.html', {'form': form})
 
 def custom_login_view(request):
     if request.method == 'POST':

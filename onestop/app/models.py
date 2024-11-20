@@ -8,7 +8,7 @@ class User(AbstractUser):
         ('staff', 'Staff'),
         ('student', 'Student'),
     )
-    status = models.CharField(max_length=10, choices=STATUS_CHOICES)
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES , default='student', blank=True , null=True) 
     
     groups = models.ManyToManyField(
         Group,
